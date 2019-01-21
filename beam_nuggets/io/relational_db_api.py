@@ -398,7 +398,6 @@ def create_table(session, name, table_config, record):
                 # for more transactions and carry on
                 logging.info('TABLE ALREADY EXISTS, ROLLING BACK CREATE TRANSACTION')
                 session.rollback()
-                session.bind.dispose()
             else:
                 # Otherwise, raise the exception
                 raise e
