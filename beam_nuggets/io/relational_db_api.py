@@ -386,8 +386,19 @@ def create_table(session, name, table_config, record):
         )
         metadata = MetaData(bind=session.bind)
         sqlalchemy_table = define_table_f(metadata)
-        metadata.create_all()
-        table_class = create_table_class(sqlalchemy_table)
+        try:
+            metadata.create_all()
+            table_class = create_table_class(sqlalchemy_table)
+            session.commit()
+        except Exception as e:
+            table_class = load_table(session, name)
+            if table_class:
+                # If another worker has already created the table, get ready
+                # for more transactions and carry on
+                session.rollback()
+            else:
+                # Otherwise, raise the exception
+                raise e
 
     return table_class
 
