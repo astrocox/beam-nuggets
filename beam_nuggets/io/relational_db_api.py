@@ -390,7 +390,7 @@ def create_table(session, name, table_config, record):
         try:
             metadata.create_all()
             table_class = create_table_class(sqlalchemy_table)
-            session.commit()
+            session.flush()
         except Exception as e:
             table_class = load_table(session, name)
             if table_class:
