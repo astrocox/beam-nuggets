@@ -2,6 +2,7 @@
 from __future__ import division, print_function
 
 import datetime
+import logging
 
 from sqlalchemy import (
     create_engine, MetaData, Table, Column,
@@ -395,7 +396,9 @@ def create_table(session, name, table_config, record):
             if table_class:
                 # If another worker has already created the table, get ready
                 # for more transactions and carry on
+                logging.info('TABLE ALREADY EXISTS, ROLLING BACK CREATE TRANSACTION')
                 session.rollback()
+                session.bind.dispose()
             else:
                 # Otherwise, raise the exception
                 raise e
