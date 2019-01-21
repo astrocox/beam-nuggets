@@ -257,7 +257,7 @@ class SqlAlchemyDB(object):
         self._session = self._SessionClass()
 
     def close_session(self):
-        self._session.close_all()
+        self._session.close()
         self._session.bind.dispose()
         self._session = None
 
@@ -351,7 +351,7 @@ class _Table(object):
             session.commit()
         except:
             session.rollback()
-            session.close_all()
+            session.close()
             session.bind.dispose()
             raise
 
